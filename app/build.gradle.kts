@@ -1,9 +1,12 @@
+import com.android.tools.r8.internal.tf
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("kotlin-kapt")
     id("dagger.hilt.android.plugin")
     kotlin("kapt")
+    id ("de.undercouch.download")
 }
 
 android {
@@ -39,18 +42,27 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
+    androidResources{
+        noCompress += "tflite"
+    }
+
     buildFeatures {
         compose = true
+        mlModelBinding = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
     }
+
+
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
 }
+
 
 dependencies {
 
@@ -62,6 +74,9 @@ dependencies {
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
+//    implementation("org.tensorflow:tensorflow-lite-support:0.4.2")
+    // implementation("org.tensorflow:tensorflow-lite-metadata:0.4.2")
+
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
@@ -102,4 +117,23 @@ dependencies {
     implementation ("androidx.camera:camera-camera2:${cameraxVersion}")
     implementation ("androidx.camera:camera-view:${cameraxVersion}")
     implementation ("androidx.camera:camera-lifecycle:$cameraxVersion")
+
+    //tf
+    implementation ("org.tensorflow:tensorflow-lite:2.12.0") // Or the latest version
+    implementation ("org.tensorflow:tensorflow-lite-task-vision:0.4.0")
+    // Import the GPU delegate plugin Library for GPU inference
+    implementation ("org.tensorflow:tensorflow-lite-gpu-delegate-plugin:0.4.0")
+    implementation ("org.tensorflow:tensorflow-lite-gpu:2.10.0")
+
+
+        // ViewModel & LiveData
+        implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
+        implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.8.7")
+
+        // Kotlin Coroutines
+        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+
+
+
+
 }
