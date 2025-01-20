@@ -133,6 +133,9 @@ dependencies {
         // Kotlin Coroutines
         implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 
+    //for animation dotlottie
+    implementation("com.github.LottieFiles:dotlottie-android:0.4.1")
+
 
 
 

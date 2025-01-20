@@ -1,8 +1,7 @@
 package com.example.auraprototype.ui.presentation.screen.splashScreen
 
-import android.app.Instrumentation.ActivityResult
+
 import android.widget.Toast
-import android.widget.Toast.makeText
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
