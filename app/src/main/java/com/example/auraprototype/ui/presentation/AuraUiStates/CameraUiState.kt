@@ -19,7 +19,7 @@ sealed class ClassificationUIState{
 
 
 data class CameraUiState(
-    val image : Bitmap? =null,
+    val image : Bitmap? = null,
     val faceShape : String = ""
 )
 

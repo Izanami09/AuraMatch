@@ -75,6 +75,8 @@ dependencies {
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
+    implementation("com.google.mlkit:vision-common:17.3.0")
+    implementation("com.google.android.gms:play-services-mlkit-face-detection:17.1.0")
 //    implementation("org.tensorflow:tensorflow-lite-support:0.4.2")
     // implementation("org.tensorflow:tensorflow-lite-metadata:0.4.2")
 
@@ -136,6 +138,10 @@ dependencies {
 
     //for animation dotlottie
     implementation("com.github.LottieFiles:dotlottie-android:0.4.1")
+
+    //for coil
+    implementation("io.coil-kt:coil-compose:2.5.0")
+
 
 
 

@@ -42,7 +42,7 @@ import kotlinx.coroutines.delay
 
 
         LaunchedEffect(Unit) {
-            delay(3000)
+            //delay(3000)
             splashViewModel.checkPermission(context)
         }
 
@@ -51,22 +51,22 @@ import kotlinx.coroutines.delay
                 Box(
                     modifier = modifier.fillMaxSize()
                 ) {
-                    DotLottieAnimation(
-                        //source = DotLottieSource.Url("https://lottiefiles-mobile-templates.s3.amazonaws.com/ar-stickers/swag_sticker_piggy.lottie"), // URL of .json or .lottie
-                        source = DotLottieSource.Asset("splashScreenAnimation.json"),
-                        autoplay = true,
-                        loop = true,
-                        speed = 3f,
-                        useFrameInterpolation = false,
-                        playMode = Mode.FORWARD,
-                        modifier = Modifier.fillMaxSize()
-                    )
+//                    DotLottieAnimation(
+//                        //source = DotLottieSource.Url("https://lottiefiles-mobile-templates.s3.amazonaws.com/ar-stickers/swag_sticker_piggy.lottie"), // URL of .json or .lottie
+//                        source = DotLottieSource.Asset("splashScreenAnimation.json"),
+//                        autoplay = true,
+//                        loop = true,
+//                        speed = 3f,
+//                        useFrameInterpolation = false,
+//                        playMode = Mode.FORWARD,
+//                        modifier = Modifier.fillMaxSize()
+//                    )
                 }
             }
 
             is SplashUIState.PermissionGranted -> {
                 LaunchedEffect(key1 = Unit) {
-                    navController.navigate(AuraScreens.CameraScreen.route)
+                    navController.navigate(AuraScreens.FaceDetectionScreen.route)
                 }
             }
 

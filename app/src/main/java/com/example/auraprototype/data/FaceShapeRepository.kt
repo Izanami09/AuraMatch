@@ -40,7 +40,7 @@ class FaceShapeRepository ( private val context : Context) {
         }
 
         // Map the class index to a label
-        val classLabels = listOf("Heart", "Oblong", "Oval", "Round", "Square")  // Update with your actual class labels
+        val classLabels = listOf("heart", "oblong", "oval", "round", "square")  // Update with your actual class labels
         val predictedLabel = if (maxIndex != -1) classLabels[maxIndex] else "Unknown"
 
         // Clean up resources

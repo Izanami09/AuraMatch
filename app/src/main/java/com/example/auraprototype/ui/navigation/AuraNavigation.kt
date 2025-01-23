@@ -7,7 +7,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.auraprototype.ui.presentation.screen.cameraScreen.CameraScreen
+
+import com.example.auraprototype.ui.presentation.screen.cameraScreen.FaceDetectionScreen
 import com.example.auraprototype.ui.presentation.screen.classificationScreen.ClassificationScreen
 import com.example.auraprototype.ui.presentation.screen.splashScreen.PermissionScreen
 import com.example.auraprototype.ui.presentation.screen.splashScreen.SplashScreen
@@ -22,8 +23,8 @@ fun AuraNavigation(){
         route = "sharedGraph"
     ) {
         composable(route = AuraScreens.SplashScreen.route){ SplashScreen(navController = navController, splashViewModel = hiltViewModel())}
-        composable(route = AuraScreens.CameraScreen.route) { CameraScreen(navController = navController)}
         composable(route = AuraScreens.PermissionScreen.route) { PermissionScreen(splashViewModel = hiltViewModel())  }
         composable(route = AuraScreens.ClassificationScreen.route) { ClassificationScreen(navController = navController) }
+        composable(route = AuraScreens.FaceDetectionScreen.route){ FaceDetectionScreen(navController = navController)}
     }
 }
