@@ -103,7 +103,7 @@ fun CameraPreviewScreen(
     screenHeight : Int
 ) {
     //forBuilding Camera Selector
-    val lensFacing  = CameraSelector.LENS_FACING_FRONT
+    val lensFacing  = CameraSelector.LENS_FACING_BACK
 
     //for binding camera provider to lifecycle
     val lifecycleOwner = LocalLifecycleOwner.current

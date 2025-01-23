@@ -11,25 +11,51 @@ import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.auraprototype.data.FaceShapeRepository
+import com.example.auraprototype.data.RecommendationRepository
+import com.example.auraprototype.model.Recommendation
+import com.example.auraprototype.model.Resource
+import com.example.auraprototype.model.Resource.Loading
 import com.example.auraprototype.ui.presentation.AuraUiStates.CameraUiState
+
+import com.example.auraprototype.ui.presentation.AuraUiStates.ClassificationUIState
+
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import org.checkerframework.checker.units.qual.degrees
+import kotlinx.coroutines.launch
 import javax.inject.Inject
-import javax.inject.Singleton
 
 @HiltViewModel
 class CameraViewModel @Inject constructor(
-    private val classifyFaceShape : FaceShapeRepository
+    private val classifyFaceShape : FaceShapeRepository,
+    private val recommendationRepository: RecommendationRepository
 ) : ViewModel() {
 
     private val _cameraScreenState = MutableStateFlow(CameraUiState())
     val cameraScreenState = _cameraScreenState.asStateFlow()
-    fun processImage(bitmap: Bitmap) : String {
+
+    private val _classificationUiState = MutableStateFlow<Resource<Recommendation>>(Loading())
+    val classificationUIState = _classificationUiState.asStateFlow()
+
+
+    //to fetchRecommendations
+    fun getRecommendationsForScreen(
+        faceShape : String = _cameraScreenState.value.faceShape
+    ){
+        viewModelScope.launch {
+            _classificationUiState.value =  Resource.Loading()
+            val recommendations = recommendationRepository.getRecommendations(faceShape)
+            _classificationUiState.value = recommendations
+        }
+    }
+
+
+    //toProcess and send Face data to remote api
+    fun processImage(bitmap: Bitmap){
         val result = classifyFaceShape.classifyFaceShape(bitmap)
         println(result)
         _cameraScreenState.update {
@@ -37,51 +63,26 @@ class CameraViewModel @Inject constructor(
                 faceShape = result
             )
         }
-      return "Success in classfication"
     }
+
+
+
+
+    //to rotate and crop bitmap
+    fun rotateAndCropBitmap(bitmap: Bitmap, degrees: Float, x: Int, y: Int, width: Int, height: Int ): Bitmap {
+        val matrix = Matrix().apply { postRotate(degrees) }
+        val rotatedBitmap =   Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+        return Bitmap.createBitmap(rotatedBitmap, x, y, width, height)
+    }
+
 
     //to rotate bitmap
-    fun rotateAndCropBitmap(bitmap: Bitmap, degrees: Float, x: Int, y: Int, width: Int, height: Int ): Bitmap {
-        val matrix = Matrix().apply {
-            postRotate(degrees)
-        }
-        println(
-            "x,y,right, bottom: $x $y $width $height"
-        )
-        val rotatedBitmap =   Bitmap.createBitmap(
-            bitmap,
-            0,
-            0,
-            bitmap.width,
-            bitmap.height,
-            matrix,
-            true
-        )
-
-        return Bitmap.createBitmap(
-            rotatedBitmap,
-            x,
-            y,
-            width,
-            height
-        )
+    fun rotateImage(bitmap: Bitmap, degrees: Float): Bitmap {
+        val matrix = Matrix().apply { postRotate(degrees) }
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
     }
 
-    fun rotateImage(bitmap:Bitmap, degrees: Float) : Bitmap{
-        val matrix = Matrix().apply {
-            postRotate(degrees)
-        }
-        val rotatedBitmap =   Bitmap.createBitmap(
-            bitmap,
-            0,
-            0,
-            bitmap.width,
-            bitmap.height,
-            matrix,
-            true
-        )
-        return rotatedBitmap
-    }
+
     //to Capture Image
     fun captureImage(
         imageCapture: ImageCapture,
@@ -115,47 +116,19 @@ class CameraViewModel @Inject constructor(
                     val savedUri = outputFileResults.savedUri
                     println("Image saved at : $savedUri")
                     println("Success")
-
                     savedUri?.let {
                         val bitmap = context.contentResolver.openInputStream(it).use {
                                 inputStream -> BitmapFactory.decodeStream(inputStream)
 
                         }
 
-//                        // Screen dimensions
-//                        val screenWidth = 392
-//                        val screenHeight = 768
-//
-//// Bitmap dimensions
-//                        val bitmapWidth = 1940
-//                        val bitmapHeight = 2529
-//
-//// Scale factors
-//                        val widthScale = bitmapWidth.toFloat() / screenWidth
-//                        val heightScale = bitmapHeight.toFloat() / screenHeight
-//
-//// Safe area dimensions (from your UI logic)
-//                        val safeAreaWidth = screenWidth * 0.3f
-//                        val safeAreaHeight = screenHeight * 0.6f
-//                        val safeAreaTopLeftX = (screenWidth +200 - safeAreaWidth) / 2
-//                        val safeAreaTopLeftY = (screenHeight + 240 - safeAreaHeight) / 3
-//
-//// Map safe area to bitmap dimensions
-//                        val safeAreaBitmapX = safeAreaTopLeftX * widthScale
-//                        val safeAreaBitmapY = safeAreaTopLeftY * heightScale
-//                        val safeAreaBitmapWidth = safeAreaWidth * widthScale
-//                        val safeAreaBitmapHeight = safeAreaHeight * heightScale
-
-                        //val portraitBitmap = rotateAndCropBitmap(bitmap, 90f, x = safeAreaBitmapX.toInt(), y = safeAreaBitmapY.toInt(), width = safeAreaBitmapWidth.toInt(), height = safeAreaBitmapHeight.toInt())
-                        val portraitBitmap = rotateImage(bitmap, 270f)
+                        val portraitBitmap = rotateImage(bitmap, 90f)
                         onImageCaptured(portraitBitmap)
                         _cameraScreenState.update { cameraUiState ->
                             cameraUiState.copy(
-                                imageBitmap = portraitBitmap
+                                image = portraitBitmap
                             )
-
                         }
-                        println("Sending the bitmap value $bitmap")
                         navController.navigate("classificationScreen")
                     }
 

@@ -42,7 +42,7 @@ import kotlinx.coroutines.delay
 
 
         LaunchedEffect(Unit) {
-            delay(1000)
+            delay(3000)
             splashViewModel.checkPermission(context)
         }
 
@@ -52,8 +52,8 @@ import kotlinx.coroutines.delay
                     modifier = modifier.fillMaxSize()
                 ) {
                     DotLottieAnimation(
-                        source = DotLottieSource.Url("https://lottiefiles-mobile-templates.s3.amazonaws.com/ar-stickers/swag_sticker_piggy.lottie"), // URL of .json or .lottie
-                        //source = DotLottieSource.Asset("splashScreenAnimation.json"),
+                        //source = DotLottieSource.Url("https://lottiefiles-mobile-templates.s3.amazonaws.com/ar-stickers/swag_sticker_piggy.lottie"), // URL of .json or .lottie
+                        source = DotLottieSource.Asset("splashScreenAnimation.json"),
                         autoplay = true,
                         loop = true,
                         speed = 3f,

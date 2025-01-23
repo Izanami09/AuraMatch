@@ -7,6 +7,7 @@ plugins {
     id("dagger.hilt.android.plugin")
     kotlin("kapt")
     id ("de.undercouch.download")
+    kotlin("plugin.serialization") version "2.1.0"
 }
 
 android {

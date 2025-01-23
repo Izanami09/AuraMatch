@@ -1,24 +1,15 @@
 package com.example.auraprototype.data
 
 import android.content.Context
-import android.content.res.AssetFileDescriptor
 import android.graphics.Bitmap
-import android.graphics.Bitmap.createScaledBitmap
-import android.graphics.Color
-import android.os.FileUtils
 
 
 import org.tensorflow.lite.DataType
 import org.tensorflow.lite.Interpreter
-import org.tensorflow.lite.TensorFlowLite.init
 import org.tensorflow.lite.support.common.FileUtil
-import org.tensorflow.lite.support.image.TensorImage
 import org.tensorflow.lite.support.tensorbuffer.TensorBuffer
-import java.io.FileInputStream
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
-import java.nio.MappedByteBuffer
-import java.nio.channels.FileChannel
 
 
 class FaceShapeRepository ( private val context : Context) {

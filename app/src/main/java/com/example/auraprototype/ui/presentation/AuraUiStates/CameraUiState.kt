@@ -2,11 +2,28 @@ package com.example.auraprototype.ui.presentation.AuraUiStates
 
 import android.graphics.Bitmap
 import androidx.compose.ui.graphics.ImageBitmap
+import com.example.auraprototype.model.FilteredBread
+import com.example.auraprototype.model.FilteredGlass
+import com.example.auraprototype.model.FilteredHair
+import com.example.auraprototype.model.Recommendation
+import com.example.auraprototype.model.Resource
+import com.google.gson.annotations.SerializedName
+
+
+
+sealed class ClassificationUIState{
+    data object Loading : ClassificationUIState()
+    data class Success(val recommendation: Recommendation) : ClassificationUIState()
+    data class Error(val message: String) : ClassificationUIState()
+}
+
 
 data class CameraUiState(
-//    val isLoading: Boolean = false,
-//    val result: String? = null,
-//    val errorMessage: String? = null,
-    var imageBitmap: Bitmap? = null,
-    var faceShape : String = ""
+    val image : Bitmap? =null,
+    val faceShape : String = ""
 )
+
+
+
+
+
