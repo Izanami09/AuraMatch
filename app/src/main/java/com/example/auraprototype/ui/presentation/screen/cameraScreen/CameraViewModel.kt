@@ -47,11 +47,12 @@ class CameraViewModel @Inject constructor(
 
     //to fetchRecommendations
     fun getRecommendationsForScreen(
-        faceShape : String = _cameraScreenState.value.faceShape
+        faceShape : String = _cameraScreenState.value.faceShape,
+        gender : String = _cameraScreenState.value.faceShape
     ){
         viewModelScope.launch{
             _classificationUiState.value =  Resource.Loading()
-            val recommendations = withContext(Dispatchers.IO){recommendationRepository.getRecommendations(faceShape)}
+            val recommendations = withContext(Dispatchers.IO){recommendationRepository.getRecommendations(faceShape, gender)}
             _classificationUiState.value = recommendations
         }
     }
@@ -74,6 +75,23 @@ class CameraViewModel @Inject constructor(
 
         }
         navController.navigate("classificationScreen")
+    }
+
+    //on Male Button Clicked
+    fun maleButtonClicked() {
+        _cameraScreenState.update {
+            it.copy(
+                gender = "male"
+            )
+        }
+    }
+    //on Male Button Clicked
+    fun femaleButtonClicked() {
+        _cameraScreenState.update {
+            it.copy(
+                gender = "female"
+            )
+        }
     }
 
 }

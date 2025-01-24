@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -34,6 +35,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
@@ -57,9 +59,10 @@ fun ClassificationScreen(
 
     val capturedImage = remember { cameraUiState.image }
     val faceShape = cameraUiState.faceShape
+    val gender = cameraUiState.gender
 
     LaunchedEffect(Unit) {
-        cameraViewModel.getRecommendationsForScreen(faceShape = faceShape)
+        cameraViewModel.getRecommendationsForScreen(faceShape = faceShape, gender )
     }
         LazyColumn(
             modifier = Modifier
@@ -100,6 +103,9 @@ fun ClassificationScreen(
                     item {
                         val errorMessage = (classificationUIState as Resource.Error).message
                         Text(text = "Error: $errorMessage", color = MaterialTheme.colorScheme.error)
+                        Button(onClick = { cameraViewModel.getRecommendationsForScreen(faceShape, gender) }) {
+                            Text(text = "Retry")
+                        }
                     }
                 }
             }
