@@ -142,6 +142,9 @@ dependencies {
     //for coil
     implementation("io.coil-kt:coil-compose:2.5.0")
 
+    //Material Theme
+    implementation("androidx.compose.material:material:1.7.6")
+
 
 
 

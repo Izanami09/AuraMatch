@@ -1,4 +1,4 @@
-package com.example.auraprototype.ui.presentation.screen.classificationScreen
+package com.example.auraprototype.ui.presentation.screen.detectionAndClassificaitonScreen
 
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
@@ -35,7 +35,6 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
@@ -43,7 +42,6 @@ import com.example.auraprototype.model.FilteredBread
 import com.example.auraprototype.model.FilteredGlass
 import com.example.auraprototype.model.FilteredHair
 import com.example.auraprototype.model.Resource
-import com.example.auraprototype.ui.presentation.screen.cameraScreen.CameraViewModel
 
 @Composable
 fun ClassificationScreen(
@@ -107,6 +105,10 @@ fun ClassificationScreen(
                             Text(text = "Retry")
                         }
                     }
+                }
+
+                else ->{
+
                 }
             }
         }

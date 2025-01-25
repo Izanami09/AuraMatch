@@ -11,7 +11,7 @@ interface RecommendationAPIService {
     @GET("api/users")
     suspend fun getUsersByFaceShapeAndGender(
         @Query("faceshape") faceShape: String,
-        @Query("gender") gender: String = "male"
+        @Query("gender") gender: String
     ): Response<Recommendation>
 
 

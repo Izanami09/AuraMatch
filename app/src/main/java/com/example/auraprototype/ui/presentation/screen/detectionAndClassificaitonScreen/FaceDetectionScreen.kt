@@ -1,4 +1,4 @@
-package com.example.auraprototype.ui.presentation.screen.cameraScreen
+package com.example.auraprototype.ui.presentation.screen.detectionAndClassificaitonScreen
 
 import com.example.auraprototype.R
 
@@ -7,16 +7,13 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Matrix
-import android.graphics.Paint
 
 
-import android.graphics.RectF
 import android.view.ViewGroup.LayoutParams
 import android.widget.LinearLayout
 import androidx.camera.core.AspectRatio
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
-import androidx.camera.core.ImageCapture.CaptureMode
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.ImageProxy
 import androidx.camera.view.CameraController
@@ -25,14 +22,28 @@ import androidx.camera.view.PreviewView
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.material.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.twotone.ArrowBack
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -58,6 +69,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.style.TextAlign
+
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
@@ -65,6 +80,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
+import com.dotlottie.dlplayer.Mode
+import com.example.auraprototype.ui.theme.ErrorColor
+import com.example.auraprototype.ui.theme.PrimaryColor
+import com.example.auraprototype.ui.theme.SecondaryColor
+import com.example.auraprototype.ui.theme.SuccessColor
+import com.lottiefiles.dotlottie.core.compose.ui.DotLottieAnimation
+import com.lottiefiles.dotlottie.core.util.DotLottieSource
 import java.util.concurrent.Executor
 
 private const val OVAL_WIDTH_DP = 250
@@ -72,6 +94,7 @@ private const val OVAL_HEIGHT_DP = 300
 private const val OVAL_LEFT_OFFSET_RATIO = 2
 private const val OVAL_TOP_OFFSET_RATIO = 3
 
+@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("RememberReturnType")
 @Composable
 fun FaceDetectionScreen(
@@ -92,7 +115,8 @@ fun FaceDetectionScreen(
     val cameraController: LifecycleCameraController =
         remember { LifecycleCameraController(context) }
     cameraController.cameraSelector =
-        CameraSelector.Builder().requireLensFacing(CameraSelector.LENS_FACING_BACK)
+        CameraSelector.Builder()
+            .requireLensFacing(CameraSelector.LENS_FACING_FRONT)
             .build()
 
     val cameraPreviewView = remember {
@@ -100,6 +124,32 @@ fun FaceDetectionScreen(
     }
 
     Scaffold(
+        topBar = {
+                    CenterAlignedTopAppBar(
+                        title = {
+                            Text(
+                                text = "Face Shape Detection",
+                                style = MaterialTheme.typography.titleLarge,
+                                fontStyle = FontStyle.Normal,
+                                fontFamily = FontFamily.Monospace
+
+                            )
+                        },
+                        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = PrimaryColor),
+                        navigationIcon = {
+                            IconButton(onClick = { navController.popBackStack() }) {
+                                Icon(
+                                    imageVector = Icons.Outlined.ArrowBack,
+                                    contentDescription = "Back Arrow",
+                                    tint = Color.White
+                                )
+                            }
+                        }
+
+                    )
+
+
+            },
         modifier = Modifier
             .fillMaxSize()
             .navigationBarsPadding()
@@ -108,10 +158,6 @@ fun FaceDetectionScreen(
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             if (isCameraShown) {
                 CameraView(paddingValues, cameraPreviewView)
-            } else {
-                capturedPhoto?.let { photo ->
-                    CapturedPhotoView(photo)
-                }
             }
 
             OvalOverlay(
@@ -131,47 +177,53 @@ fun FaceDetectionScreen(
                     it,
                 )
             }
+            Column(
+                modifier = Modifier.align(Alignment.BottomCenter),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
 
-            if (isCameraShown) {
-                CapturePhotoButton(
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .padding(bottom = 50.dp),
-                    isFaceDetected = isFaceDetected,
-                    onButtonClicked = {
-                        capturePhotoAndReplaceBackground(
-                            context,
-                            cameraController,
-                            isFaceDetected,
-                         onBackgroundReplaced = { capturedBitmap ->
-                            capturedPhoto = capturedBitmap.asImageBitmap()
-                            if (isFaceDetected)
-                                isCameraShown = false
+                if (isCameraShown) {
+                    Text(
+                        text = "Analyzing Face Shape",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = Color.White
+                    )
+                    Text(
+                        text = "Hold still we are currently detecting your unique face shape, so please be patient and press the capture button as soon as the oval turns green" ,
+                        textAlign = TextAlign.Center
+                    )
+                }
+
+                if (isCameraShown) {
+                    CapturePhotoButton(
+                        modifier = Modifier
+                            .padding(bottom = 50.dp),
+                        isFaceDetected = isFaceDetected,
+                        onButtonClicked = {
+                            viewModel.capturePhotoAndReplaceBackground(
+                                context,
+                                cameraController,
+                                isFaceDetected,
+                                onBackgroundReplaced = { capturedBitmap ->
+                                    capturedPhoto = capturedBitmap.asImageBitmap()
+                                    if (isFaceDetected)
+                                        isCameraShown = false
+                                },
+                                toNavigate = {
+                                    viewModel.processImage(it, navController)
+                                }
+                            )
                         },
-                            toNavigate = {
-                                viewModel.processImage(it, navController)
-                            }
-                        )
-                    },
-                )
+                    )
+                }
             }
         }
 
     }
 }
 
-@Composable
-private fun CapturedPhotoView(photo: ImageBitmap) {
-    Image(
-        modifier = Modifier
-            .statusBarsPadding()
-            .navigationBarsPadding()
-            .fillMaxSize(),
-        bitmap = photo,
-        contentDescription = null,
-        contentScale = ContentScale.Crop,
-    )
-}
+
 
 @Composable
 private fun CameraView(
@@ -189,7 +241,7 @@ private fun CameraView(
                     LayoutParams.MATCH_PARENT,
                 )
                 setBackgroundColor(android.graphics.Color.BLACK)
-                implementationMode = PreviewView.ImplementationMode.COMPATIBLE
+                implementationMode = PreviewView.ImplementationMode.PERFORMANCE
                 scaleType = PreviewView.ScaleType.FILL_CENTER
             }.also {
                 cameraPreviewView.value = it
@@ -225,44 +277,9 @@ private fun CapturePhotoButton(
 
 }
 
-private fun capturePhotoAndReplaceBackground(
-    context: Context,
-    cameraController: LifecycleCameraController,
-    isFaceDetected: Boolean,
-    onBackgroundReplaced: (Bitmap) -> Unit,
-    toNavigate : (processedBitmap : Bitmap) -> Unit
-) {
-    val mainExecutor: Executor = ContextCompat.getMainExecutor(context)
-    if (isFaceDetected) {
-        cameraController.takePicture(
-            mainExecutor,
-            object : ImageCapture.OnImageCapturedCallback() {
-                override fun onCaptureSuccess(image: ImageProxy) {
-                    val capturedBitmap: Bitmap =
-                        image.toBitmap().rotateBitmap(image.imageInfo.rotationDegrees)
 
-                    processCapturedPhotoAndReplaceBackground(capturedBitmap) { processedBitmap ->
-                        onBackgroundReplaced(processedBitmap)
-                        toNavigate(processedBitmap)
-                    }
 
-                    image.close()
 
-                }
-
-                override fun onError(exception: ImageCaptureException) {
-                }
-            },
-        )
-    }
-}
-
-private fun processCapturedPhotoAndReplaceBackground(
-    capturedBitmap: Bitmap,
-    onBackgroundReplaced: (Bitmap) -> Unit,
-) {
-    onBackgroundReplaced(capturedBitmap)
-}
 
 private fun startFaceDetection(
     context: Context,
@@ -298,11 +315,12 @@ private fun OvalOverlay(
     onCenterCalculated: (Offset) -> Unit = {},
 ) {
     val ovalColor =
-        if (isFaceDetected) Color.Green else Color.Red
+        if (isFaceDetected) SuccessColor else ErrorColor
     Box(
         modifier = modifier,
         contentAlignment = Alignment.TopCenter,
     ) {
+
         val ovalCenterOffset = remember {
             mutableStateOf<Offset?>(null)
         }
@@ -331,7 +349,7 @@ private fun OvalOverlay(
                 addOval(ovalRect)
             }
             clipPath(ovalPath, clipOp = ClipOp.Difference) {
-                drawRect(SolidColor(Color.Black.copy(alpha = 0.95f)))
+                drawRect(SolidColor(SecondaryColor))
             }
         }
 
@@ -345,21 +363,15 @@ private fun OvalOverlay(
                 (size.height - ovalSize.height) / OVAL_TOP_OFFSET_RATIO - ovalSize.height
             drawOval(
                 color = ovalColor,
-                style = Stroke(width = OVAL_TOP_OFFSET_RATIO.dp.toPx()),
+                style = Stroke(width = 20f),
                 topLeft = Offset(ovalLeft, ovalTop + ovalSize.height),
                 size = ovalSize,
+                alpha = 0.8f
             )
         }
 
     }
 }
 
-fun Bitmap.rotateBitmap(rotationDegrees: Int): Bitmap {
-    val matrix = Matrix().apply {
-        postRotate(-rotationDegrees.toFloat())
-        postScale(1f, -1f)
-    }
 
-    return Bitmap.createBitmap(this, 0, 0, width, height, matrix, true)
-}
 

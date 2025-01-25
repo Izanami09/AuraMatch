@@ -13,8 +13,8 @@ class RecommendationRemoteDataSource @Inject constructor(
     private val recommendationAPIService : RecommendationAPIService
 ) {
 
-    suspend fun getRecommendations(faceShape:String) : Response<Recommendation> {
-        return recommendationAPIService.getUsersByFaceShapeAndGender(faceShape)
+    suspend fun getRecommendations(faceShape:String, gender:String) : Response<Recommendation> {
+        return recommendationAPIService.getUsersByFaceShapeAndGender(faceShape, gender)
     }
 
 }

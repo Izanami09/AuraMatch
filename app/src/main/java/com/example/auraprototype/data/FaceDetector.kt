@@ -8,6 +8,7 @@ import androidx.compose.ui.geometry.Offset
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.face.FaceDetection
 import com.google.mlkit.vision.face.FaceDetector
+import com.google.mlkit.vision.face.FaceDetectorOptions
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -32,7 +33,13 @@ class FaceDetector(
     }
 
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
-    private val faceDetector: FaceDetector = FaceDetection.getClient()
+    private val options = FaceDetectorOptions.Builder()
+        .setClassificationMode(FaceDetectorOptions.CLASSIFICATION_MODE_NONE)
+        .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_FAST) // Prioritize speed
+        .setLandmarkMode(FaceDetectorOptions.LANDMARK_MODE_NONE) // Skip detailed landmarks
+        .setContourMode(FaceDetectorOptions.CONTOUR_MODE_NONE)
+        .build()
+    private val faceDetector: FaceDetector = FaceDetection.getClient(options)
 
     @OptIn(ExperimentalGetImage::class)
     override fun analyze(imageProxy: ImageProxy) {

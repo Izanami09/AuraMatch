@@ -11,9 +11,9 @@ class RecommendationRepository @Inject constructor(
     private val recommendationRemoteDataSource: RecommendationRemoteDataSource
     //private val externalScope: CoroutineScope
 ){
-    suspend fun getRecommendations(faceShape:String) : Resource<Recommendation> {
+    suspend fun getRecommendations(faceShape:String, gender:String) : Resource<Recommendation> {
         return try{
-            val response = recommendationRemoteDataSource.getRecommendations(faceShape)
+            val response = recommendationRemoteDataSource.getRecommendations(faceShape, gender)
             if(response.isSuccessful){
                 val recommendations = response.body() ?: Recommendation(
                     filteredBread = emptyList(),
