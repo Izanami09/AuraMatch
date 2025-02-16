@@ -1,7 +1,6 @@
 package com.example.auraprototype.ui.presentation.screen.detectionAndClassificaitonScreen
 
 import android.annotation.SuppressLint
-import android.graphics.drawable.Drawable
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -14,21 +13,20 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.MaterialTheme.colors
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -39,29 +37,34 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.auraprototype.R
 import com.example.auraprototype.ui.navigation.AuraScreens
-import com.example.auraprototype.ui.theme.NeutralGrey
+import com.example.auraprototype.ui.theme.BackgroundPrimary
+import com.example.auraprototype.ui.theme.BentosFontFamily
+import com.example.auraprototype.ui.theme.PremiumGradient
+
+
 import com.example.auraprototype.ui.theme.PrimaryColor
 import com.example.auraprototype.ui.theme.SuccessColor
-import com.example.auraprototype.ui.theme.colorStops
+import com.example.auraprototype.ui.theme.TextPrimary
+import com.example.auraprototype.ui.theme.TextSecondary
+import com.example.auraprototype.ui.theme.TopAppBarColor
+import com.example.auraprototype.ui.theme.successGradient
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GenderScreen(
-    modifier : Modifier = Modifier.fillMaxSize(),
     navController: NavController,
     @SuppressLint("UnrememberedGetBackStackEntry") navBackStackEntry: NavBackStackEntry = remember {
         navController.getBackStackEntry("sharedGraph")
@@ -78,15 +81,28 @@ fun GenderScreen(
                 title = {
                         Text(
                             text = "Select Gender",
-                            style = MaterialTheme.typography.titleLarge,
+                            style = MaterialTheme.typography.headlineMedium,
                             fontStyle = FontStyle.Normal,
-                            fontFamily = FontFamily.Monospace
+                            fontFamily = BentosFontFamily,
+                            color = Color.White
 
                         )
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = PrimaryColor
-                )
+                    containerColor = TopAppBarColor
+                ),
+                navigationIcon = {
+                    IconButton(
+                        onClick = {navController.popBackStack()},
+
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.ArrowBack,
+                            contentDescription = "Back Arrow",
+                            tint = Color.White
+                        )
+                    }
+                }
             )
         }
     ) {
@@ -95,19 +111,29 @@ fun GenderScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
+                .background(BackgroundPrimary)
                 .padding(it)
                 .padding(20.dp),
+
             verticalArrangement = Arrangement.SpaceEvenly,
             horizontalAlignment = Alignment.CenterHorizontally
 
         ) {
+            androidx.compose.material.Text(
+                text = "Please select your gender to proceed further.",
+                style = androidx.compose.material.MaterialTheme.typography.body1,
+                fontFamily = BentosFontFamily,
+                color = Color(0xFFA1A4B2),
+                textAlign = TextAlign.Center
+            )
+
             Button(
                 onClick = {
                             cameraViewModel.maleButtonClicked()
                           },
                 shape = CircleShape,
                 contentPadding = PaddingValues(4.dp),
-                border = if(gender == "male") { BorderStroke(2.dp, SuccessColor) } else {ButtonDefaults.outlinedButtonBorder}
+                border = if(gender == "male") { BorderStroke(5.dp, Brush.linearGradient(colors = successGradient)) } else {ButtonDefaults.outlinedButtonBorder.copy(5.dp, Brush.linearGradient(colors = PremiumGradient))}
             ) {
                 GenderImage(image = R.drawable.male)
             }
@@ -117,7 +143,7 @@ fun GenderScreen(
                           },
                 shape = CircleShape,
                 contentPadding = PaddingValues(4.dp),
-                border = if(gender == "female") { BorderStroke(2.dp, SuccessColor) } else {ButtonDefaults.outlinedButtonBorder}
+                border = if(gender == "female") { BorderStroke(5.dp, Brush.linearGradient(colors = successGradient)) } else {ButtonDefaults.outlinedButtonBorder.copy(5.dp, Brush.linearGradient(colors = PremiumGradient))}
             ) {
                 GenderImage(image = R.drawable.female)
             }
@@ -125,13 +151,24 @@ fun GenderScreen(
                 Button(
                     onClick = { navController.navigate(AuraScreens.FaceDetectionScreen.route) },
                     enabled = (genderUiState.gender != ""),
-                    shape = RectangleShape,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = SuccessColor,
+                        contentColor = Color(0xFAF6F1FB),
+                        disabledContainerColor = Color(0xFF8E97AA),
+                        disabledContentColor = Color(0xFAF6F1FB)
+                    ),
                     modifier = Modifier
-                        .height(50.dp)
-                        .width(200.dp)
+                        .fillMaxWidth()
+                        .padding(14.dp)
+                        .height(63.dp)
                 ) {
                         Text(
-                            text = "Continue"
+                            text = "Continue",
+                            style = TextStyle(
+                                fontWeight = FontWeight.Bold,
+                                fontFamily = BentosFontFamily,
+                                color = Color(0xFFF6F1FB)
+                            )
                         )
                 }
             }
@@ -144,7 +181,7 @@ fun GenderImage(image : Int){
         modifier = Modifier
             .size(200.dp)
             .clip(CircleShape),
-        colors = CardDefaults.cardColors(NeutralGrey), // Background color
+        colors = CardDefaults.cardColors(Color(0xFFE1E1E5)), // Background color
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
     ) {
         Image(
@@ -158,9 +195,6 @@ fun GenderImage(image : Int){
 }
 
 
-@Preview(showBackground = true)
-@Composable
-fun abc(){
-    GenderImage(image = R.drawable.female)
-}
+
+
 

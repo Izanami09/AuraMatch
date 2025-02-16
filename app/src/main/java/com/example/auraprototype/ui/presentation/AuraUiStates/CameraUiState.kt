@@ -2,6 +2,7 @@ package com.example.auraprototype.ui.presentation.AuraUiStates
 
 import android.graphics.Bitmap
 import androidx.compose.ui.graphics.ImageBitmap
+import com.example.auraprototype.model.ClickedItem
 import com.example.auraprototype.model.FilteredBread
 import com.example.auraprototype.model.FilteredGlass
 import com.example.auraprototype.model.FilteredHair
@@ -21,8 +22,13 @@ sealed class ClassificationUIState{
 data class CameraUiState(
     val image : Bitmap? = null,
     val faceShape : String = "",
-    var gender : String = ""
+    var gender : String = "",
+    val clickedItem: ClickedItem = ClickedItem(),
+    var isContentAlreadyFetched : Boolean = false,
+    var lastFetchedFaceShape: String? = null, // Track last fetched face shape
+    var selectedService : String = ""
 )
+
 
 
 

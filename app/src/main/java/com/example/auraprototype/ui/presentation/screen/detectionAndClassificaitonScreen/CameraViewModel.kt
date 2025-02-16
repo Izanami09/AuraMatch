@@ -13,9 +13,15 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.auraprototype.data.FaceShapeRepository
 import com.example.auraprototype.data.RecommendationRepository
+import com.example.auraprototype.data.RecommendationRepositoryImpl
+import com.example.auraprototype.model.ClickedItem
+import com.example.auraprototype.model.FilteredBread
+import com.example.auraprototype.model.FilteredGlass
+import com.example.auraprototype.model.FilteredHair
 import com.example.auraprototype.model.Recommendation
 import com.example.auraprototype.model.Resource
 import com.example.auraprototype.model.Resource.Loading
+import com.example.auraprototype.ui.navigation.AuraScreens
 import com.example.auraprototype.ui.presentation.AuraUiStates.CameraUiState
 
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -31,7 +37,7 @@ import javax.inject.Inject
 @HiltViewModel
 class CameraViewModel @Inject constructor(
     private val classifyFaceShape : FaceShapeRepository,
-    private val recommendationRepository: RecommendationRepository
+    private val recommendationRepository: RecommendationRepositoryImpl
 ) : ViewModel() {
 
     private val _cameraScreenState = MutableStateFlow(CameraUiState())
@@ -53,7 +59,14 @@ class CameraViewModel @Inject constructor(
         }
     }
 
-
+    fun toCropImage(bitmap: Bitmap, navController: NavController){
+        _cameraScreenState.update {
+            it.copy(
+                image = bitmap
+            )
+        }
+        navController.navigate("imageCropScreen")
+    }
     //toProcess and send Face data to remote api
     fun processImage(bitmap: Bitmap, navController: NavController){
         _cameraScreenState.update {
@@ -137,6 +150,90 @@ class CameraViewModel @Inject constructor(
         }
 
         return Bitmap.createBitmap(this, 0, 0, width, height, matrix, true)
+    }
+
+    //For detail screen
+    fun onRecommendationClick(item : Any, navController: NavController){
+
+                when(item){
+                    is FilteredBread ->{
+                        val beardItem = ClickedItem(
+                            id = item.id,
+                            faceShape = item.faceShape,
+                            name = item.beardStyle,
+                            image = item.image,
+                            description = item.description,
+                            version = item.version,
+                            gender = item.gender
+                        )
+                        _cameraScreenState.update {
+                            it.copy(
+                                clickedItem = beardItem
+                            )
+                        }
+
+                }
+                    is FilteredHair ->{
+                        val hairItem = ClickedItem(
+                            id = item.id,
+                            faceShape = item.faceShape,
+                            name = item.hairStyle,
+                            image = item.image,
+                            description = item.description,
+                            version = item.version,
+                            gender = item.gender
+                        )
+                        _cameraScreenState.update {
+                            it.copy(
+                                clickedItem = hairItem
+                            )
+                        }
+
+                    }
+                    is FilteredGlass ->{
+                        val glassItem = ClickedItem(
+                            id = item.id,
+                            faceShape = item.faceShape,
+                            name = item.glassStyle,
+                            image = item.image,
+                            description = item.description,
+                            version = item.version,
+                            gender = item.gender
+                        )
+                        _cameraScreenState.update {
+                            it.copy(
+                                clickedItem = glassItem
+                            )
+                        }
+
+                    }
+
+        }
+        println("Being called from viewmodel")
+        navController.navigate(AuraScreens.DetailsScreen.route)
+    }
+
+    fun contentFetched(fetched : Boolean){
+        _cameraScreenState.update {
+            it.copy(
+                isContentAlreadyFetched = fetched
+            )
+        }
+    }
+
+    fun updateLastFetchedFaceShape(faceShape: String?) {
+        _cameraScreenState.value = _cameraScreenState.value.copy(lastFetchedFaceShape = faceShape)
+    }
+
+    fun search(item : String) {}
+
+    fun serviceSelector(service : String) {
+        _cameraScreenState.update {
+            it.copy(
+                selectedService = service
+            )
+        }
+        println(cameraScreenState.value.selectedService)
     }
 
 

@@ -1,9 +1,12 @@
 package com.example.auraprototype.model
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+@Parcelize
 @Serializable
 data class FilteredGlass(
     @SerializedName("_id") val id: String?,
@@ -13,4 +16,4 @@ data class FilteredGlass(
     @SerializedName("description") val description: String?,
     @SerializedName("__v") val version: Int?,
     @SerializedName("gender") val gender: String?
-)
+) : Parcelable

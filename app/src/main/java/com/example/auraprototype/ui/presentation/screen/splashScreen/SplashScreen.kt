@@ -66,7 +66,7 @@ import kotlinx.coroutines.delay
 
             is SplashUIState.PermissionGranted -> {
                 LaunchedEffect(key1 = Unit) {
-                    navController.navigate(AuraScreens.GenderScreen.route)
+                    navController.navigate(AuraScreens.LoginScreen.route)
                 }
             }
 

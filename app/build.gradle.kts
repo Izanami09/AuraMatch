@@ -3,11 +3,12 @@ import com.android.tools.r8.internal.tf
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    id("kotlin-kapt")
     id("dagger.hilt.android.plugin")
     kotlin("kapt")
     id ("de.undercouch.download")
     kotlin("plugin.serialization") version "2.1.0"
+    id("kotlin-parcelize")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -37,11 +38,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
 
     androidResources{
@@ -53,7 +54,7 @@ android {
         mlModelBinding = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.5.14"
     }
 
 
@@ -61,6 +62,9 @@ android {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
+    }
+    kapt{
+        keepJavacAnnotationProcessors = true
     }
 }
 
@@ -77,8 +81,6 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     implementation("com.google.mlkit:vision-common:17.3.0")
     implementation("com.google.android.gms:play-services-mlkit-face-detection:17.1.0")
-//    implementation("org.tensorflow:tensorflow-lite-support:0.4.2")
-    // implementation("org.tensorflow:tensorflow-lite-metadata:0.4.2")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
@@ -129,12 +131,12 @@ dependencies {
     implementation ("org.tensorflow:tensorflow-lite-gpu:2.10.0")
 
 
-        // ViewModel & LiveData
-        implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
-        implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.8.7")
+    // ViewModel & LiveData
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.8.7")
 
-        // Kotlin Coroutines
-        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    // Kotlin Coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 
     //for animation dotlottie
     implementation("com.github.LottieFiles:dotlottie-android:0.4.1")
@@ -145,8 +147,16 @@ dependencies {
     //Material Theme
     implementation("androidx.compose.material:material:1.7.6")
 
+    //for statusbar
+    implementation ("com.google.accompanist:accompanist-systemuicontroller:0.32.0")
 
+    implementation(platform("com.google.firebase:firebase-bom:33.9.0"))
+
+
+    // Add the dependency for the Firebase Authentication library
+    //implementation("com.google.firebase:firebase-auth")
 
 
 
 }
+

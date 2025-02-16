@@ -18,6 +18,8 @@ class FaceShapeRepository ( private val context : Context) {
         val tfLiteOptions = Interpreter.Options() // can be configured to use GPU
         val interpreter = Interpreter(FileUtil.loadMappedFile(context, "model.tflite"), tfLiteOptions)
         // Resize and preprocess the bitmap
+        println(bitmap.height)
+        println(bitmap.height)
         val resizedBitmap = Bitmap.createScaledBitmap(bitmap, 224, 224, true)
         val inputBuffer = preprocessBitmap(resizedBitmap)
 

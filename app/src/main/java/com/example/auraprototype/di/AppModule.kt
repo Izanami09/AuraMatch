@@ -2,18 +2,21 @@ package com.example.auraprototype.di
 
 import android.content.Context
 import com.example.auraprototype.data.FaceShapeRepository
-import com.example.auraprototype.data.RecommendationRepository
-import com.example.auraprototype.data.remote.RecommendationRemoteDataSource
+import com.example.auraprototype.data.RecommendationRepositoryImpl
+import com.example.auraprototype.domain.sc.hasNetwork
 import com.example.auraprototype.network.RecommendationAPIService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import okhttp3.Cache
+import okhttp3.CacheControl
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module
@@ -28,11 +31,43 @@ object AppModule{
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(): OkHttpClient {
+    fun provideOkHttpClient(@ApplicationContext context: Context): OkHttpClient {
+        val cacheSize = (10 * 1024 * 1024).toLong()
+
+        //Initializing instance of Cache class
+        val myCache = Cache(context.cacheDir, cacheSize)
+
         val logging = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }
+
+
         return OkHttpClient.Builder()
+            .cache(myCache)
+            .addInterceptor{
+                chain ->
+                var request = chain.request()
+                request = if(hasNetwork(context))
+                    request
+                        .newBuilder()
+                        .cacheControl(
+                            CacheControl.Builder()
+                                .maxAge(30, TimeUnit.MINUTES)
+                                .build()
+                        )
+                        .build()
+                else
+                    request
+                        .newBuilder()
+                        .cacheControl(
+                            CacheControl.Builder()
+                                .maxStale(1, TimeUnit.DAYS)
+                                .build()
+                        )
+                        .build()
+                chain.proceed(request)
+
+            }
             .addInterceptor(logging)
             .build()
     }
@@ -54,18 +89,7 @@ object AppModule{
 
     @Provides
     @Singleton
-    fun provideRecommendationRemoteDataSource(apiService: RecommendationAPIService) : RecommendationRemoteDataSource{
-        return RecommendationRemoteDataSource(apiService)
+    fun provideRecommendationRepositoryImpl(recommendationAPIService: RecommendationAPIService) : RecommendationRepositoryImpl {
+        return RecommendationRepositoryImpl(recommendationAPIService, "")
     }
-
-    @Provides
-    @Singleton
-    fun provideRecommendationRepository(remoteDataSource: RecommendationRemoteDataSource) : RecommendationRepository{
-        return RecommendationRepository(remoteDataSource)
-    }
-
-
-
-
-
 }
