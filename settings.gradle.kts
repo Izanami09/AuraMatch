@@ -21,4 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "AuraPrototype"
 include(":app")
- 
+

@@ -19,24 +19,39 @@ import com.example.auraprototype.ui.presentation.screen.detectionAndClassificait
 import com.example.auraprototype.ui.presentation.screen.splashScreen.LoginScreen
 import com.example.auraprototype.ui.presentation.screen.splashScreen.PermissionScreen
 import com.example.auraprototype.ui.presentation.screen.splashScreen.SplashScreen
+import com.example.auraprototype.ui.presentation.screen.tryon.TryOnScreen
+
 
 @Composable
-fun AuraNavigation(){
-        val navController = rememberNavController()
-    
+fun AuraNavigation() {
+    val navController = rememberNavController()
+
     NavHost(
         navController = navController,
         startDestination = AuraScreens.SplashScreen.route,
         route = "sharedGraph"
     ) {
-        composable(route = AuraScreens.SplashScreen.route){ SplashScreen(navController = navController, splashViewModel = hiltViewModel())}
+        composable(route = AuraScreens.SplashScreen.route) {
+            SplashScreen(
+                navController = navController,
+                splashViewModel = hiltViewModel()
+            )
+        }
         composable(route = AuraScreens.LoginScreen.route) { LoginScreen(navController = navController) }
         composable(route = AuraScreens.GenderScreen.route) { GenderScreen(navController = navController) }
-        composable(route = AuraScreens.PermissionScreen.route) { PermissionScreen(splashViewModel = hiltViewModel())  }
-        composable(route = AuraScreens.ClassificationScreen.route) { ClassificationScreen(navController = navController) }
-        composable(route = AuraScreens.FaceDetectionScreen.route){ FaceDetectionScreen(navController = navController)}
+        composable(route = AuraScreens.PermissionScreen.route) { PermissionScreen(splashViewModel = hiltViewModel()) }
+        composable(route = AuraScreens.ClassificationScreen.route) {
+            ClassificationScreen(
+                navController = navController
+            )
+        }
+        composable(route = AuraScreens.FaceDetectionScreen.route) {
+            FaceDetectionScreen(
+                navController = navController
+            )
+        }
         composable(route = AuraScreens.DetailsScreen.route) { DetailsScreen(navController = navController) }
         composable(route = AuraScreens.ImageCropScreen.route) { ImageCropperScreen(navController = navController) }
-
+        composable(route = AuraScreens.TryOnScreen.route) { TryOnScreen() }
     }
 }

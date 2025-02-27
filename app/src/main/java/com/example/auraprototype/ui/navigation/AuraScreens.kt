@@ -13,4 +13,5 @@ sealed class AuraScreens (val route : String){
 
     object DetailsScreen : AuraScreens(route = "detailsScreen")
     object ImageCropScreen : AuraScreens(route = "imageCropScreen")
+    object TryOnScreen : AuraScreens(route = "tryOnScreen")
 }

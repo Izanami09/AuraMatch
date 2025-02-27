@@ -2,8 +2,6 @@ package com.example.auraprototype.data
 
 import android.content.Context
 import android.graphics.Bitmap
-
-
 import org.tensorflow.lite.DataType
 import org.tensorflow.lite.Interpreter
 import org.tensorflow.lite.support.common.FileUtil
@@ -12,23 +10,14 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
 
+
 class FaceShapeRepository ( private val context : Context) {
 
     fun classifyFaceShape(bitmap: Bitmap) : String{
-        val tfLiteOptions = Interpreter.Options() // can be configured to use GPU
+        val tfLiteOptions = Interpreter.Options()
         val interpreter = Interpreter(FileUtil.loadMappedFile(context, "model.tflite"), tfLiteOptions)
-        // Resize and preprocess the bitmap
-        println(bitmap.height)
-        println(bitmap.height)
-        val resizedBitmap = Bitmap.createScaledBitmap(bitmap, 224, 224, true)
-        val inputBuffer = preprocessBitmap(resizedBitmap)
+        val inputBuffer = preprocessBitmap(bitmap)
 
-        // Get the input tensor shape and set it
-//        val inputDetails = interpreter.getInputDetails()
-//        val inputIndex = inputDetails[0].index
-
-        // Run inference
-//        val outputDetails = interpreter.getOutputDetails()
         val outputBuffer = TensorBuffer.createFixedSize(intArrayOf(1, 5), DataType.FLOAT32)  // Assuming 5 classes
         interpreter.run(inputBuffer, outputBuffer.buffer)
 
@@ -36,13 +25,13 @@ class FaceShapeRepository ( private val context : Context) {
         val outputArray = outputBuffer.floatArray
         val maxIndex = outputArray.indices.maxByOrNull { outputArray[it] } ?: -1
 
-        // Print all the probabilities and class index
-        outputArray.forEachIndexed { index, probability ->
-            println("Class $index: $probability")
-        }
+//        // To print all the probabilities and class index
+//        outputArray.forEachIndexed { index, probability ->
+//            println("Class $index: $probability")
+//        }
 
         // Map the class index to a label
-        val classLabels = listOf("heart", "oblong", "oval", "round", "square")  // Update with your actual class labels
+        val classLabels = listOf("heart", "oblong", "oval", "round", "square")
         val predictedLabel = if (maxIndex != -1) classLabels[maxIndex] else "Unknown"
 
         // Clean up resources
@@ -72,6 +61,8 @@ class FaceShapeRepository ( private val context : Context) {
 
         return byteBuffer
     }
+
+
 
 
 

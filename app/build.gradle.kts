@@ -155,8 +155,8 @@ dependencies {
 
     // Add the dependency for the Firebase Authentication library
     //implementation("com.google.firebase:firebase-auth")
-
-
-
+    //for vision task
+    // MediaPipe Selfie Segmentation
+    implementation("com.google.mediapipe:tasks-vision:latest.release")
 }
 

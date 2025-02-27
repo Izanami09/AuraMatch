@@ -137,58 +137,58 @@ fun ClassificationScreen(
                 }
             )
         },
-        bottomBar = {
-            BottomAppBar(
-                modifier = Modifier.fillMaxWidth()
-                    .height(50.dp)
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    modifier = Modifier.fillMaxWidth()
-                        .height(40.dp)
-                ) {
-                    IconButton(
-                        onClick = {
-                            if(navController.currentDestination?.route != AuraScreens.ClassificationScreen.route)
-                                navController.navigate(AuraScreens.ClassificationScreen.route)
-                                selectedItem = "profile"
-                        }
-                    ) {
-                        if(selectedItem == "profile" ) {
-                            Icon(
-                                Icons.Filled.Person,
-                                contentDescription = "Home"
-                            )
-                        }else{
-                            Icon(
-                                Icons.Outlined.Person,
-                                contentDescription = "Home"
-                            )
-                        }
-                    }
-                    IconButton(
-                        onClick = {
-                            if(navController.currentDestination?.route != AuraScreens.ClassificationScreen.route)
-                                navController.navigate(AuraScreens.ClassificationScreen.route)
-                            selectedItem = "home"
-                        }
-                    ) {
-                        if(selectedItem == "home" ) {
-                            Icon(
-                                Icons.Filled.Home,
-                                contentDescription = "Home"
-                            )
-                        }else{
-                            Icon(
-                                Icons.Outlined.Home,
-                                contentDescription = "Home"
-                            )
-                        }
-                    }
-                }
-            }
-        }
+//        bottomBar = {
+//            BottomAppBar(
+//                modifier = Modifier.fillMaxWidth()
+//                    .height(50.dp)
+//            ) {
+//                Row(
+//                    verticalAlignment = Alignment.CenterVertically,
+//                    horizontalArrangement = Arrangement.SpaceEvenly,
+//                    modifier = Modifier.fillMaxWidth()
+//                        .height(40.dp)
+//                ) {
+//                    IconButton(
+//                        onClick = {
+//                            if(navController.currentDestination?.route != AuraScreens.ClassificationScreen.route)
+//                                navController.navigate(AuraScreens.ClassificationScreen.route)
+//                                selectedItem = "profile"
+//                        }
+//                    ) {
+//                        if(selectedItem == "profile" ) {
+//                            Icon(
+//                                Icons.Filled.Person,
+//                                contentDescription = "Home"
+//                            )
+//                        }else{
+//                            Icon(
+//                                Icons.Outlined.Person,
+//                                contentDescription = "Home"
+//                            )
+//                        }
+//                    }
+//                    IconButton(
+//                        onClick = {
+//                            if(navController.currentDestination?.route != AuraScreens.TryOnScreen.route)
+//                                navController.navigate(AuraScreens.TryOnScreen.route)
+//                            selectedItem = "home"
+//                        }
+//                    ) {
+//                        if(selectedItem == "home" ) {
+//                            Icon(
+//                                Icons.Filled.Home,
+//                                contentDescription = "Home"
+//                            )
+//                        }else{
+//                            Icon(
+//                                Icons.Outlined.Home,
+//                                contentDescription = "Home"
+//                            )
+//                        }
+//                    }
+//                }
+//            }
+//        }
     ) {
         Box(
             modifier = Modifier
