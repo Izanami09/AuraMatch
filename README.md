@@ -38,7 +38,10 @@ AuraMatch is an AI-powered Android application that recommends the best **hairst
 - 🌐 AuraMatch-Backend – Backend services for user profiles or extended features (optional)
 ## 📸 Screenshots
 
-<!-- Add screenshots here once available --> <!-- ![Home Screen](screenshots/home.png) -->
+ 
+<img src="screenshots/firstScreen.JPG" alt="Home Screen" width="300"/> <img src="screenshots/genderScreen.JPG" alt="Home Screen" width="300"/> <img src="screenshots/cameraScreen.JPG" alt="Home Screen" width="300"/>
+<img src="screenshots/cropScreen.JPG" alt="Home Screen" width="300"/><img src="screenshots/homeScreen2.JPG" alt="Home Screen" width="300"/><img src="screenshots/homeScreen1.JPG" alt="Home Screen" width="300"/><img src="screenshots/resultScreen.JPG" alt="Home Screen" width="300"/>
+
 ## 🛠️ Technologies Used
 
 - Jetpack Compose – Modern UI toolkit for Android
