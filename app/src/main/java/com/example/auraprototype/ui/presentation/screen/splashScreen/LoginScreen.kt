@@ -92,12 +92,12 @@ fun LoginScreen(
                 textAlign = TextAlign.Center
             )
         }
-        GradientButton(onClick = { navController.navigate(AuraScreens.GenderScreen.route) })
+        GradientButton(onClick = { navController.navigate(AuraScreens.GenderScreen.route)}, "Get Started" )
     }
 }
 
 @Composable
-fun GradientButton(onClick: () -> Unit) {
+fun GradientButton(onClick: () -> Unit, message : String) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -113,7 +113,7 @@ fun GradientButton(onClick: () -> Unit) {
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = "Get Started",
+            text = message,
             style = TextStyle(
                 fontWeight = FontWeight.Bold,
                 fontFamily = BentosFontFamily,

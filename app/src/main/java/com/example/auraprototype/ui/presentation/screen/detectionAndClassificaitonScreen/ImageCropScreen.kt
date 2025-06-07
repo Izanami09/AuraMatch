@@ -7,7 +7,17 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material.icons.outlined.Done
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,7 +34,12 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
+import com.example.auraprototype.ui.presentation.screen.splashScreen.GradientButton
+import com.example.auraprototype.ui.theme.PremiumGradient
+import com.example.auraprototype.ui.theme.SuccessColor
+import com.example.auraprototype.ui.theme.TextPrimary
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ImageCropperScreen(
     modifier: Modifier = Modifier.fillMaxSize(),
@@ -43,11 +58,33 @@ fun ImageCropperScreen(
     var cropBoxTopLeft by remember { mutableStateOf<Offset?>(null) }
     var canvasSize by remember { mutableStateOf(IntSize.Zero) }
 
+
     Box(
         modifier = modifier
             .background(Color.Black)
             .onSizeChanged { canvasSize = it }
     ) {
+        TopAppBar(
+            title = {
+                Text(
+                    text = "Crop",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = TextPrimary
+                )
+            },
+            navigationIcon = {
+                IconButton(
+                    onClick = {navController.popBackStack()}
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Close,
+                        contentDescription = "Close",
+                        tint = TextPrimary
+                    )
+                }
+
+            }
+        )
         Canvas(
             modifier = Modifier
                 .fillMaxSize()
@@ -128,7 +165,7 @@ fun ImageCropperScreen(
             verticalArrangement = Arrangement.Bottom,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Button(onClick = {
+            GradientButton(onClick = {
                 if (canvasSize.width > 0 && cropBoxTopLeft != null) {
                     val scale = canvasSize.width / imageBitmap.width.toFloat()
                     val cropBoxSizeImage = cropBoxSizePx / scale
@@ -145,9 +182,9 @@ fun ImageCropperScreen(
                     val finalBitmap = Bitmap.createScaledBitmap(croppedBitmap, 224, 224, true)
                     cameraViewModel.processImage(finalBitmap, navController)
                 }
-            }) {
-                Text("Crop Face")
-            }
+            },
+                message = "Crop Face"
+            )
         }
     }
 }

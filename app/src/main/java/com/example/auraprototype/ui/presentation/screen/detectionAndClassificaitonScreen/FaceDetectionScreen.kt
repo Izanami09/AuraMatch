@@ -29,6 +29,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
@@ -37,6 +38,7 @@ import androidx.compose.material.icons.outlined.AccountBox
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Face
 import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -74,6 +76,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
+import coil.compose.AsyncImagePainter.State.Empty.painter
 import com.example.auraprototype.R
 import com.example.auraprototype.ui.theme.BentosFontFamily
 import com.example.auraprototype.ui.theme.SuccessColor
@@ -219,96 +222,73 @@ fun FaceDetectionScreen(
         ) {
             if (isCameraShown) {
 
-                IconButton(
-                    onClick = {
-                        coroutineScope.launch { // Launch in a coroutine
-                            lensFacing = if (lensFacing == CameraSelector.LENS_FACING_FRONT) {
-                                CameraSelector.LENS_FACING_BACK
-                            } else {
-                                CameraSelector.LENS_FACING_FRONT
-                            }
-
-                            cameraController.cameraSelector = CameraSelector.Builder()
-                                .requireLensFacing(lensFacing)
-                                .build()
-
-                            cameraController.unbind() // Important: Unbind before rebinding
-                            cameraController.bindToLifecycle(lifecycleOwner) // Rebind with new lens facing
-                        }
-                    },
+            }
+            // Status Card with Glass Effect
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(
+                        bottomSheetBackgroundColor,
+                        RoundedCornerShape(28.dp)
+                    )
+                    .border(
+                        width = 1.dp,
+                        color = bottomSheetBorderColor,
+                        shape = RoundedCornerShape(28.dp)
+                    )
+            ) {
+                Column(
                     modifier = Modifier
-                        .size(40.dp)
-                        .background(topBarButtonBackgroundColor, CircleShape)
+                        .fillMaxWidth()
+                        .padding(24.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Icon(
-                        imageVector = if (lensFacing == CameraSelector.LENS_FACING_FRONT) Icons.Outlined.Face else Icons.Outlined.Home,
-                        contentDescription = "Switch Camera",
-                        tint = topBarTextColor,
-                        modifier = Modifier.size(24.dp)
+                    // Animated Status Icon
+                    Box(
+                        modifier = Modifier
+                            .size(48.dp)
+                            .background(
+                                if (isFaceDetected) SuccessColor.copy(alpha = 0.1f)
+                                else bottomSheetIconBackgroundColor,
+                                CircleShape
+                            ),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = if (isFaceDetected) Icons.Outlined.Face
+                            else Icons.Outlined.AccountBox,
+                            contentDescription = null,
+                            tint = if (isFaceDetected) SuccessColor else bottomSheetTextColor,
+                            modifier = Modifier.size(28.dp)
+                        )
+                    }
+
+                    Text(
+                        text = if (isFaceDetected) "Face Detected" else "Position Your Face",
+                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
+                        color = bottomSheetTextColor,
+                        fontWeight = FontWeight.SemiBold
+                    )
+
+                    Text(
+                        text = if (isFaceDetected)
+                            "Perfect! Tap the button to capture"
+                        else
+                            "Center your face within the oval frame",
+                        textAlign = TextAlign.Center,
+                        color = bottomSheetTextColor.copy(alpha = 0.7f),
+                        style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Normal)
                     )
                 }
             }
-                // Status Card with Glass Effect
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(
-                            bottomSheetBackgroundColor,
-                            RoundedCornerShape(28.dp)
-                        )
-                        .border(
-                            width = 1.dp,
-                            color = bottomSheetBorderColor,
-                            shape = RoundedCornerShape(28.dp)
-                        )
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(24.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        // Animated Status Icon
-                        Box(
-                            modifier = Modifier
-                                .size(48.dp)
-                                .background(
-                                    if (isFaceDetected) SuccessColor.copy(alpha = 0.1f)
-                                    else bottomSheetIconBackgroundColor,
-                                    CircleShape
-                                ),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(
-                                imageVector = if (isFaceDetected) Icons.Outlined.Face
-                                else Icons.Outlined.AccountBox,
-                                contentDescription = null,
-                                tint = if (isFaceDetected) SuccessColor else bottomSheetTextColor,
-                                modifier = Modifier.size(28.dp)
-                            )
-                        }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
 
-                        Text(
-                            text = if (isFaceDetected) "Face Detected" else "Position Your Face",
-                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
-                            color = bottomSheetTextColor,
-                            fontWeight = FontWeight.SemiBold
-                        )
-
-                        Text(
-                            text = if (isFaceDetected)
-                                "Perfect! Tap the button to capture"
-                            else
-                                "Center your face within the oval frame",
-                            textAlign = TextAlign.Center,
-                            color = bottomSheetTextColor.copy(alpha = 0.7f),
-                            style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Normal)
-                        )
-                    }
-                }
-
-
+                Spacer(modifier = Modifier.weight(3f))
                 // Modern Capture Button
                 Box(
                     modifier = Modifier
@@ -323,12 +303,20 @@ fun FaceDetectionScreen(
                                     if (isFaceDetected) isCameraShown = false
                                 },
                                 toNavigate = {
-                                    if (lensFacing == CameraSelector.LENS_FACING_FRONT){
+                                    if (lensFacing == CameraSelector.LENS_FACING_FRONT) {
                                         viewModel.toCropImage(bitmap = it, navController)
-                                    }else{
+                                    } else {
                                         val matrix = Matrix()
                                         matrix.preScale(-1f, 1f) // Flip horizontally
-                                        val rotatedBitmap =  Bitmap.createBitmap(it, 0, 0, it.width, it.height, matrix, true)
+                                        val rotatedBitmap = Bitmap.createBitmap(
+                                            it,
+                                            0,
+                                            0,
+                                            it.width,
+                                            it.height,
+                                            matrix,
+                                            true
+                                        )
 
                                         viewModel.toCropImage(bitmap = rotatedBitmap, navController)
                                     }
@@ -366,9 +354,45 @@ fun FaceDetectionScreen(
                                 .size(32.dp)
                                 .align(Alignment.Center)
                         )
+
+                    }
+                }
+                Spacer(modifier = Modifier.weight(2f))
+                Box(
+                    modifier = Modifier.weight(1f)
+                ){
+                    IconButton(
+                        onClick = {
+                            coroutineScope.launch { // Launch in a coroutine
+                                lensFacing = if (lensFacing == CameraSelector.LENS_FACING_FRONT) {
+                                    CameraSelector.LENS_FACING_BACK
+                                } else {
+                                    CameraSelector.LENS_FACING_FRONT
+                                }
+
+                                cameraController.cameraSelector = CameraSelector.Builder()
+                                    .requireLensFacing(lensFacing)
+                                    .build()
+
+                                cameraController.unbind() // Important: Unbind before rebinding
+                                cameraController.bindToLifecycle(lifecycleOwner) // Rebind with new lens facing
+                            }
+                        },
+                        modifier = Modifier
+                            .size(40.dp)
+                            .background(topBarButtonBackgroundColor, CircleShape)
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.switch_camera),
+                            contentDescription = "Switch Camera",
+                            tint = topBarTextColor,
+                            modifier = Modifier.size(24.dp)
+                        )
                     }
                 }
             }
+
+        }
         }
     }
 
